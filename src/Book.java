@@ -1,18 +1,13 @@
-public class Book {
+public class Book extends BookData {
 
     private final int id;
-    private final String name;
 
     public Book(int id, String name) {
+        super(name);
         this.id = id;
-        this.name = name;
     }
 
     public int getId() {
         return id;
-    }
-
-    public String getName() {
-        return name;
     }
 }
