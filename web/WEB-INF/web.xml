@@ -5,11 +5,25 @@
          version="4.0">
 
     <servlet>
-        <servlet-name>Servlet</servlet-name>
-        <servlet-class>Servlet</servlet-class>
+        <servlet-name>Books</servlet-name>
+        <servlet-class>Servlets.BookServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>Servlet</servlet-name>
-        <url-pattern>/lib</url-pattern>
+        <servlet-name>Books</servlet-name>
+        <url-pattern>/books</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Authors</servlet-name>
+        <servlet-class>Servlets.AuthorServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Authors</servlet-name>
+        <url-pattern>/authors/list</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>Authors</servlet-name>
+        <url-pattern>/authors/select</url-pattern>
     </servlet-mapping>
 </web-app>

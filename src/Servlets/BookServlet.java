@@ -1,3 +1,8 @@
+package Servlets;
+
+import Books.Book;
+import Books.BookData;
+import Books.BookInfo;
 import com.google.gson.Gson;
 
 import javax.servlet.http.HttpServlet;
@@ -10,18 +15,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 
-public class Servlet extends HttpServlet {
-    private static final Gson gson = new Gson();
-    private static Connection connection;
-
-    static {
-        try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            connection = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;database=angular", "maga", "qwerty");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+public class BookServlet extends BaseServlet {
 
     private String read(HttpServletRequest request) {
         StringBuilder data = new StringBuilder();
@@ -41,18 +35,22 @@ public class Servlet extends HttpServlet {
         resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
 
         try (PrintWriter pw = resp.getWriter()) {
-            ResultSet rs = connection.createStatement().executeQuery("select * from [dbo].[Books]");
+            ResultSet rs = connection.createStatement().executeQuery(
+                    "select Books.id, Books.name, (Authors.firstname + ' ' + Authors.lastname) as Author from [dbo].[Books] LEFT JOIN Authors ON Authors.id = Books.author_id");
 
-            ArrayList<Book> books = new ArrayList<>();
+            ArrayList<BookInfo> books = new ArrayList<>();
             int id;
             String name;
+            String authorName;
 
             while (rs.next()) {
                 id = rs.getInt("id");
                 name = rs.getString("name");
+                authorName = rs.getString("Author");
 
-                books.add(new Book(id, name));
+                books.add(new BookInfo(id, name, authorName));
             }
+            System.out.println(gson.toJson(books));
             pw.print(gson.toJson(books));
 
         } catch (Exception e) {
