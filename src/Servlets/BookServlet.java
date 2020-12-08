@@ -1,11 +1,7 @@
 package Servlets;
 
 import Books.Book;
-import Books.BookData;
-import Books.BookInfo;
-import com.google.gson.Gson;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -38,7 +34,7 @@ public class BookServlet extends BaseServlet {
             ResultSet rs = connection.createStatement().executeQuery(
                     "select Books.id, Books.name, (Authors.firstname + ' ' + Authors.lastname) as Author from [dbo].[Books] LEFT JOIN Authors ON Authors.id = Books.author_id");
 
-            ArrayList<BookInfo> books = new ArrayList<>();
+            ArrayList<Book> books = new ArrayList<>();
             int id;
             String name;
             String authorName;
@@ -48,9 +44,8 @@ public class BookServlet extends BaseServlet {
                 name = rs.getString("name");
                 authorName = rs.getString("Author");
 
-                books.add(new BookInfo(id, name, authorName));
+                books.add(new Book(id, name, authorName, null));
             }
-            System.out.println(gson.toJson(books));
             pw.print(gson.toJson(books));
 
         } catch (Exception e) {
@@ -63,13 +58,14 @@ public class BookServlet extends BaseServlet {
         resp.addHeader("Access-Control-Allow-Origin", "*");
         resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
         String data = read(req);
-        BookData book = gson.fromJson(data, BookData.class);
-        String query = "INSERT INTO Books([name]) output Inserted.id values(?);";
+        Book book = gson.fromJson(data, Book.class);
+        String query = "INSERT INTO Books([name], author_id) output Inserted.id values(?, ?);";
         String id = null;
 
         try {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, book.getName());
+            statement.setInt(2, book.getAuthorId());
 
             ResultSet rs = statement.executeQuery();
             rs.next();
@@ -114,10 +110,12 @@ public class BookServlet extends BaseServlet {
         Book book = gson.fromJson(data, Book.class);
         int editedCount = 0;
         try {
-            PreparedStatement ps = connection.prepareStatement("UPDATE Books SET name = ? WHERE id = ?");
+            PreparedStatement ps = connection.prepareStatement("UPDATE Books SET name = ?, author_id = ? WHERE id = ?");
             ps.setString(1, book.getName());
-            ps.setInt(2, book.getId());
+            ps.setInt(2, book.getAuthorId());
+            ps.setInt(3, book.getId());
             editedCount = ps.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

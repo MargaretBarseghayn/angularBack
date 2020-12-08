@@ -21,7 +21,6 @@ public class AuthorServlet extends BaseServlet {
         resp.addHeader("Access-Control-Allow-Origin", "*");
         resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
         String uri = req.getRequestURI();
-        System.out.println(uri);
         ArrayList<Author> authors = new ArrayList<>();
 
         try (PrintWriter pw = resp.getWriter()) {
