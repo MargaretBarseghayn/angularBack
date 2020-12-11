@@ -1,15 +1,14 @@
 package Servlets;
 
 import Authors.Author;
-import com.google.gson.Gson;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -42,8 +41,8 @@ public class AuthorServlet extends BaseServlet {
                     authors.add(new Author(id, firstName, lastName, birthdate, isAlive));
                 }
 
-            } else if(uri.equals("/authors/select")){
-                ResultSet rs = connection.createStatement().executeQuery("SELECT id, (firstname+ ' ' + lastname) as name FROM Authors");
+            } else if (uri.equals("/authors/select")) {
+                ResultSet rs = connection.createStatement().executeQuery("SELECT id, (firstname + ' ' + lastname) as name FROM Authors");
 
                 int id;
                 String name;
@@ -62,4 +61,39 @@ public class AuthorServlet extends BaseServlet {
         }
 
     }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.addHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+
+        String data = read(req);
+        Author author = gson.fromJson(data, Author.class);
+        String query = "INSERT INTO Authors(firstname, lastname, birthdate, isAlive) VALUES(?, ?, ?, ?);";
+        String id = null;
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, author.getFirstName());
+            ps.setString(2, author.getLastName());
+            ps.setDate(3, java.sql.Date.valueOf(author.getBirthdate().toString()));
+            ps.setBoolean(4, author.isAlive());
+
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            id = gson.toJson(rs.getInt("id"));
+
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+
+        resp.getWriter().print(id == null ? false : id);
+    }
+
+    @Override
+    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) {
+        resp.addHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+    }
 }
+
+

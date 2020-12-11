@@ -8,22 +8,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 
 public class BookServlet extends BaseServlet {
-
-    private String read(HttpServletRequest request) {
-        StringBuilder data = new StringBuilder();
-        try (Scanner sc = new Scanner(request.getInputStream())) {
-            while (sc.hasNextLine()) {
-                data.append(sc.nextLine());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return data.toString();
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {

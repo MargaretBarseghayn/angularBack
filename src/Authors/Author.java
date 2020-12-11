@@ -1,7 +1,6 @@
 package Authors;
 
 import java.util.Date;
-import java.util.Optional;
 
 public class Author {
     private int id;
@@ -9,6 +8,8 @@ public class Author {
     private String lastName;
     private Date birthdate;
     private Boolean isAlive;
+
+    public Author(){}
 
     public Author(int id, String firstName, String lastName, Date birthdate, Boolean isAlive) {
         this.id = id;
