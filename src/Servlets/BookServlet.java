@@ -19,19 +19,22 @@ public class BookServlet extends BaseServlet {
 
         try (PrintWriter pw = resp.getWriter()) {
             ResultSet rs = connection.createStatement().executeQuery(
-                    "select Books.id, Books.name, (Authors.firstname + ' ' + Authors.lastname) as Author from [dbo].[Books] LEFT JOIN Authors ON Authors.id = Books.author_id");
+                    "select Books.id, Books.name, (Authors.firstname + ' ' + Authors.lastname) as Author, Books.author_id as aid " +
+                            "from [dbo].[Books] LEFT JOIN Authors ON Authors.id = Books.author_id");
 
             ArrayList<Book> books = new ArrayList<>();
             int id;
             String name;
             String authorName;
+            int aid;
 
             while (rs.next()) {
                 id = rs.getInt("id");
                 name = rs.getString("name");
                 authorName = rs.getString("Author");
+                aid = rs.getInt("aid");
+                books.add(new Book(id, name, authorName, aid));
 
-                books.add(new Book(id, name, authorName, null));
             }
             pw.print(gson.toJson(books));
 
@@ -72,24 +75,6 @@ public class BookServlet extends BaseServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.addHeader("Access-Control-Allow-Origin", "*");
-        resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
-        int editedCount = 0;
-
-        try {
-            PreparedStatement ps = connection.prepareStatement("DELETE FROM Books where id = ?");
-            ps.setString(1, req.getParameter("id"));
-            editedCount = ps.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        resp.getWriter().print(editedCount >= 1);
-    }
-
-    @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.addHeader("Access-Control-Allow-Origin", "*");
         resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
@@ -109,4 +94,24 @@ public class BookServlet extends BaseServlet {
         resp.getWriter().print(editedCount >= 1);
 
     }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.addHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+        int editedCount = 0;
+
+        try {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM Books where id = ?");
+            ps.setString(1, req.getParameter("id"));
+            editedCount = ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        resp.getWriter().print(editedCount >= 1);
+    }
+
+
 }

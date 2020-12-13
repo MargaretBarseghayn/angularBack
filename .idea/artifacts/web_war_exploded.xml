@@ -9,7 +9,7 @@
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="gson-2.8.6" />
-          <element id="library" level="project" name="mssql-jdbc-9.1.0.jre11-preview" />
+          <element id="file-copy" path="C:/Program Files/JetBrains/mssql-jdbc-8.4.1.jre11.jar" />
         </element>
       </element>
     </root>

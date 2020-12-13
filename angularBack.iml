@@ -19,9 +19,18 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="Tomcat8" level="application_server_libraries" />
     <orderEntry type="library" name="gson-2.8.6" level="project" />
+    <orderEntry type="library" name="Java EE 6-Java EE 6" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Program Files/JetBrains/mssql-jdbc-8.4.1.jre11.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntry type="library" name="servlet-api" level="project" />
-    <orderEntry type="library" name="mssql-jdbc-9.1.0.jre11-preview" level="project" />
+    <orderEntry type="library" name="mssql-jdbc-8.4.1.jre11" level="project" />
   </component>
 </module>

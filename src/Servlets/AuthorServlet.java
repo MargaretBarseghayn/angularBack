@@ -2,6 +2,7 @@ package Servlets;
 
 import Authors.Author;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -25,7 +26,6 @@ public class AuthorServlet extends BaseServlet {
         try (PrintWriter pw = resp.getWriter()) {
             if (uri.equals("/authors/list")) {
                 ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM Authors");
-
 
                 int id;
                 String firstName, lastName;
@@ -93,6 +93,51 @@ public class AuthorServlet extends BaseServlet {
     protected void doOptions(HttpServletRequest req, HttpServletResponse resp) {
         resp.addHeader("Access-Control-Allow-Origin", "*");
         resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.addHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+
+        String data = read(req);
+        System.out.println(data);
+        Author author = gson.fromJson(data, Author.class);
+
+        int editedCount = 0;
+        try {
+            PreparedStatement ps = connection.prepareStatement(
+                    "UPDATE Authors SET firstname = ?, lastname = ?, birthdate = ?, isAlive = ? WHERE id = ?");
+            ps.setString(1, author.getFirstName());
+            ps.setString(2, author.getLastName());
+            System.out.println(author.getBirthdate());
+            ps.setDate(3, java.sql.Date.valueOf(author.getBirthdate().toString()));
+            ps.setBoolean(4, author.isAlive());
+
+            editedCount = ps.executeUpdate();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        resp.getWriter().print(editedCount >= 1);
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.addHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+
+        int editedCount = 0;
+        try {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM Books WHERE author_id = ?");
+            ps.setString(1, req.getParameter("id"));
+            ps.executeUpdate();
+            ps = connection.prepareStatement("DELETE FROM Authors WHERE id = ?");
+            ps.setString(1, req.getParameter("id"));
+            editedCount = ps.executeUpdate();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        resp.getWriter().print(editedCount >= 1);
     }
 }
 
