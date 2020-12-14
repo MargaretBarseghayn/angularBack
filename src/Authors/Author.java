@@ -17,7 +17,6 @@ public class Author {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        System.out.println("birth " + birthdate);
         this.birthdate = birthdate;
         this.isAlive = isAlive;
     }
