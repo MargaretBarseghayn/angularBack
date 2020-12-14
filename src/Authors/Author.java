@@ -1,20 +1,23 @@
 package Authors;
 
-import java.util.Date;
+
+
+import java.sql.Date;
 
 public class Author {
     private int id;
     private String firstName;
     private String lastName;
-    private Date birthdate;
+    private long birthdate;
     private Boolean isAlive;
 
     public Author(){}
 
-    public Author(int id, String firstName, String lastName, Date birthdate, Boolean isAlive) {
+    public Author(int id, String firstName, String lastName, long birthdate, Boolean isAlive) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+        System.out.println("birth " + birthdate);
         this.birthdate = birthdate;
         this.isAlive = isAlive;
     }
@@ -49,10 +52,10 @@ public class Author {
     }
 
     public Date getBirthdate() {
-        return birthdate;
+        return new Date(birthdate);
     }
 
-    public void setBirthdate(Date birthdate) {
+    public void setBirthdate(long birthdate) {
         this.birthdate = birthdate;
     }
 

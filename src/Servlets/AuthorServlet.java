@@ -2,16 +2,15 @@ package Servlets;
 
 import Authors.Author;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class AuthorServlet extends BaseServlet {
 
@@ -38,7 +37,7 @@ public class AuthorServlet extends BaseServlet {
                     birthdate = rs.getDate("birthdate");
                     isAlive = rs.getBoolean("isAlive");
 
-                    authors.add(new Author(id, firstName, lastName, birthdate, isAlive));
+                    authors.add(new Author(id, firstName, lastName, birthdate != null ? (birthdate.getTime())  : 1, isAlive));
                 }
 
             } else if (uri.equals("/authors/select")) {
@@ -68,19 +67,21 @@ public class AuthorServlet extends BaseServlet {
         resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
 
         String data = read(req);
+        System.out.println("data" + data);
         Author author = gson.fromJson(data, Author.class);
-        String query = "INSERT INTO Authors(firstname, lastname, birthdate, isAlive) VALUES(?, ?, ?, ?);";
+        String query = "INSERT INTO Authors(firstname, lastname, birthdate, isAlive) output Inserted.id VALUES(?, ?, ?, ?);";
         String id = null;
         try {
             PreparedStatement ps = connection.prepareStatement(query);
             ps.setString(1, author.getFirstName());
             ps.setString(2, author.getLastName());
-            ps.setDate(3, java.sql.Date.valueOf(author.getBirthdate().toString()));
+            ps.setDate(3, author.getBirthdate());
             ps.setBoolean(4, author.isAlive());
 
             ResultSet rs = ps.executeQuery();
             rs.next();
             id = gson.toJson(rs.getInt("id"));
+            System.out.println("id"+ id);
 
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -101,7 +102,6 @@ public class AuthorServlet extends BaseServlet {
         resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
 
         String data = read(req);
-        System.out.println(data);
         Author author = gson.fromJson(data, Author.class);
 
         int editedCount = 0;
@@ -110,9 +110,9 @@ public class AuthorServlet extends BaseServlet {
                     "UPDATE Authors SET firstname = ?, lastname = ?, birthdate = ?, isAlive = ? WHERE id = ?");
             ps.setString(1, author.getFirstName());
             ps.setString(2, author.getLastName());
-            System.out.println(author.getBirthdate());
-            ps.setDate(3, java.sql.Date.valueOf(author.getBirthdate().toString()));
+            ps.setDate(3, author.getBirthdate());
             ps.setBoolean(4, author.isAlive());
+            ps.setInt(5, author.getId());
 
             editedCount = ps.executeUpdate();
         } catch (SQLException throwable) {
