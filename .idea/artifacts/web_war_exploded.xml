@@ -8,7 +8,6 @@
           <element id="module-output" name="angularBack" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="gson-2.8.6" />
           <element id="file-copy" path="C:/Program Files/JetBrains/mssql-jdbc-8.4.1.jre11.jar" />
         </element>
       </element>
