@@ -9,11 +9,10 @@ public class Author {
     private String firstName;
     private String lastName;
     private long birthdate;
-    private Boolean isAlive;
+    private byte isAlive;
 
-    public Author(){}
 
-    public Author(int id, String firstName, String lastName, long birthdate, Boolean isAlive) {
+    public Author(int id, String firstName, String lastName, long birthdate, byte isAlive) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -59,10 +58,21 @@ public class Author {
     }
 
     public boolean isAlive() {
-        return isAlive;
+        return isAlive == 1;
     }
 
-    public void setAlive(boolean alive) {
-        isAlive = alive;
+//    public void setAlive(boolean alive) {
+//        isAlive = alive;
+//    }
+
+    @Override
+    public String toString() {
+        return "Author{" +
+//                "id=" + id +
+                "firstName:'" + firstName + '\'' +
+                ", lastName:'" + lastName + '\'' +
+                ", birthdate:" + birthdate +
+                ", isAlive:" + isAlive  +
+                '}';
     }
 }

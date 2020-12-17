@@ -6,10 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class AuthorServlet extends BaseServlet {
@@ -37,7 +34,8 @@ public class AuthorServlet extends BaseServlet {
                     birthdate = rs.getDate("birthdate");
                     isAlive = rs.getBoolean("isAlive");
 
-                    authors.add(new Author(id, firstName, lastName, birthdate != null ? (birthdate.getTime())  : 1, isAlive));
+                    authors.add(new Author(id, firstName, lastName, birthdate != null ? (birthdate.getTime())  : 1, isAlive ? (byte) 1 : 0));
+                    authors.forEach(author -> System.out.println(author.toString()));
                 }
 
             } else if (uri.equals("/authors/select")) {
@@ -67,7 +65,6 @@ public class AuthorServlet extends BaseServlet {
         resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
 
         String data = read(req);
-        System.out.println("data" + data);
         Author author = gson.fromJson(data, Author.class);
         String query = "INSERT INTO Authors(firstname, lastname, birthdate, isAlive) output Inserted.id VALUES(?, ?, ?, ?);";
         String id = null;
@@ -81,7 +78,6 @@ public class AuthorServlet extends BaseServlet {
             ResultSet rs = ps.executeQuery();
             rs.next();
             id = gson.toJson(rs.getInt("id"));
-            System.out.println("id"+ id);
 
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -102,7 +98,9 @@ public class AuthorServlet extends BaseServlet {
         resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
 
         String data = read(req);
+        System.out.println("data" + data);
         Author author = gson.fromJson(data, Author.class);
+        System.out.println("Author" + author);
 
         int editedCount = 0;
         try {
