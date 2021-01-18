@@ -9,15 +9,15 @@ public class Author {
     private String firstName;
     private String lastName;
     private long birthdate;
-    private byte isAlive;
+    private Long deathdate;
 
 
-    public Author(int id, String firstName, String lastName, long birthdate, byte isAlive) {
+    public Author(int id, String firstName, String lastName, long birthdate, Long deathdate) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthdate = birthdate;
-        this.isAlive = isAlive;
+        this.deathdate = deathdate;
     }
 
     public Author(int id, String firstName) {
@@ -58,12 +58,21 @@ public class Author {
     }
 
     public boolean isAlive() {
-        return isAlive == 1;
+        return this.deathdate != null;
     }
 
 //    public void setAlive(boolean alive) {
 //        isAlive = alive;
 //    }
+
+
+    public Date getDeathdate() {
+        return deathdate != null ?  new Date(deathdate) : null;
+    }
+
+    public void setDeathdate(Long deathdate) {
+        this.deathdate = deathdate;
+    }
 
     @Override
     public String toString() {
@@ -72,7 +81,8 @@ public class Author {
                 "firstName:'" + firstName + '\'' +
                 ", lastName:'" + lastName + '\'' +
                 ", birthdate:" + birthdate +
-                ", isAlive:" + isAlive  +
+                ", deathdate: " + deathdate + // TODO: 12/25/2020
+                ", isAlive:" + this.isAlive()  +
                 '}';
     }
 }

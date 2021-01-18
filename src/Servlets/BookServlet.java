@@ -9,35 +9,47 @@ import java.io.PrintWriter;
 import java.sql.*;
 import java.util.ArrayList;
 
-
 public class BookServlet extends BaseServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         resp.addHeader("Access-Control-Allow-Origin", "*");
         resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+        String idParam = req.getParameter("id");
 
         try (PrintWriter pw = resp.getWriter()) {
-            ResultSet rs = connection.createStatement().executeQuery(
-                    "select Books.id, Books.name, (Authors.firstname + ' ' + Authors.lastname) as Author, Books.author_id as aid " +
-                            "from [dbo].[Books] LEFT JOIN Authors ON Authors.id = Books.author_id");
-
-            ArrayList<Book> books = new ArrayList<>();
             int id;
             String name;
             String authorName;
             int aid;
+            if (idParam == null) {
+                ResultSet rs = connection.createStatement().executeQuery(
+                        "select Books.id, Books.name, (Authors.firstname + ' ' + Authors.lastname) as Author, Books.author_id as aid " +
+                                "from [dbo].[Books] LEFT JOIN Authors ON Authors.id = Books.author_id");
 
-            while (rs.next()) {
-                id = rs.getInt("id");
-                name = rs.getString("name");
-                authorName = rs.getString("Author");
-                aid = rs.getInt("aid");
-                books.add(new Book(id, name, authorName, aid));
-
+                ArrayList<Book> books = new ArrayList<>();
+                while (rs.next()) {
+                    id = rs.getInt("id");
+                    name = rs.getString("name");
+                    authorName = rs.getString("Author");
+                    aid = rs.getInt("aid");
+                    books.add(new Book(id, name, authorName, aid));
+                }
+                pw.print(gson.toJson(books));
+            }else {
+                ResultSet rs = connection.createStatement().executeQuery("select Books.id, Books.name, " +
+                        "(Authors.firstname + ' ' + Authors.lastname) as Author, Books.author_id as aid " +
+                        " from [dbo].[Books] LEFT JOIN Authors ON Authors.id = Books.author_id WHERE Books.id = "
+                        + Integer.parseInt(idParam));
+                if (rs.next()){
+                    id = rs.getInt("id");
+                    name = rs.getString("name");
+                    authorName = rs.getString("Author");
+                    aid = rs.getInt("aid");
+                    pw.print(gson.toJson(new Book(id, name,authorName, aid)));
+                }
+                pw.print(gson.toJson(null));
             }
-            pw.print(gson.toJson(books));
-
         } catch (Exception e) {
             e.printStackTrace();
         }

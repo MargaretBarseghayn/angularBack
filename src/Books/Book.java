@@ -2,11 +2,11 @@ package Books;
 
 public class Book {
 
-    private final Integer id;
+    private final int id;
     private final String name;
 
     private final String author;
-    private final Integer authorId;
+    private final int authorId;
 
     public Book(Integer id, String name, String author, Integer authorId) {
         this.id = id;

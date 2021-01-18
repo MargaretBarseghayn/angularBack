@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="angular@localhost" uuid="38c4b17d-e393-4f4f-8121-849eac0ad88d">
+    <data-source source="LOCAL" name="angular@localhost" uuid="d1ca2c17-108b-48ec-9019-167f6a736c99">
       <driver-ref>sqlserver.ms</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>

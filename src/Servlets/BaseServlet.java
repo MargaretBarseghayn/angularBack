@@ -16,7 +16,10 @@ public class BaseServlet extends HttpServlet {
     static {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            connection = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;database=angular", "maga", "qwerty");
+/**
+ * Make sure to enter your DB user and password
+ */
+            connection = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;database=angular", "lib_login", "password");
         } catch (Exception e) {
             e.printStackTrace();
         }

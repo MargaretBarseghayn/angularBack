@@ -26,4 +26,8 @@
         <servlet-name>Authors</servlet-name>
         <url-pattern>/authors/select</url-pattern>
     </servlet-mapping>
+ <servlet-mapping>
+     <servlet-name>Authors</servlet-name>
+     <url-pattern>/authors/id</url-pattern>
+ </servlet-mapping>
 </web-app>
